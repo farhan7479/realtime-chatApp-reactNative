@@ -43,7 +43,7 @@ io.on("connection", (socket) => {
         socket.broadcast.emit('userJoined', { user: "Admin", message: ` ${users[socket.id]} has joined` });
         socket.emit('welcome', { user: "Admin", message: `Welcome to the chat, ${users[socket.id]}` });
 
-        // Save user to MongoDB
+      
         await User.create({ socketId: socket.id, username: user });
     });
 
@@ -51,17 +51,17 @@ io.on("connection", (socket) => {
         console.log(message, id);
         io.emit('sendMessage', { user: users[id], message, id });
 
-        // Save message to MongoDB
+        
         await Chat.create({ user: users[id], message, id });
     });
 
-    socket.on('disconnect', async () => {
+    socket.on('disconnect',  () => {
         socket.broadcast.emit('leave', { user: "Admin", message: `${users[socket.id]} has left` });
         console.log(`user left`);
         delete users[socket.id];
 
-        // Remove user from MongoDB
-        await User.findOneAndDelete({ socketId: socket.id });
+        
+        
     });
 });
 
